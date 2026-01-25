@@ -19,7 +19,7 @@
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "dom.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
 

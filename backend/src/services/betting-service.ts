@@ -130,8 +130,12 @@ class BettingService {
         return 'cryptoUsdt';
       case 'CRYPTO_TON':
         return 'cryptoTon';
+      case 'CRYPTO_ETH':
+        return 'cryptoEth';
       case 'FIAT_RUB':
         return 'fiatRub';
+      default:
+        throw new Error(`Unsupported currency: ${currency}`);
     }
   }
 }

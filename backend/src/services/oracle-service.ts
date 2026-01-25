@@ -109,6 +109,10 @@ class OracleService {
     const winner = winnerWallet || '0x0000000000000000000000000000000000000000' as `0x${string}`;
 
     // Check if game exists in contract and is in progress
+    if (!this.publicClient) {
+      return { success: false, error: 'Public client not initialized' };
+    }
+
     try {
       const game = await this.publicClient.readContract({
         address: this.contractAddress,
@@ -150,6 +154,10 @@ class OracleService {
       console.log(`Winner declaration submitted: ${hash}`);
 
       // Wait for confirmation
+      if (!this.publicClient) {
+        return { success: false, error: 'Public client not initialized' };
+      }
+
       const receipt = await this.publicClient.waitForTransactionReceipt({
         hash,
         confirmations: 1,
@@ -263,7 +271,7 @@ class OracleService {
    * Check oracle balance
    */
   async getOracleBalance(): Promise<string> {
-    if (!this.oracleAccount) return '0';
+    if (!this.oracleAccount || !this.publicClient) return '0';
     
     const balance = await this.publicClient.getBalance({
       address: this.oracleAccount.address,
@@ -278,6 +286,10 @@ class OracleService {
   async isReady(): Promise<{ ready: boolean; error?: string }> {
     if (!this.oracleAccount) {
       return { ready: false, error: 'Oracle private key not configured' };
+    }
+
+    if (!this.publicClient) {
+      return { ready: false, error: 'Public client not initialized' };
     }
 
     try {
