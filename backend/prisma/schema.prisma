@@ -67,7 +67,6 @@ model User {
   gamesAsPlayer2 Game[]  @relation("Player2Games")
   moves          Move[]
   transactions   Transaction[]
-  gameSessions   GameSession[]
 
   @@index([walletAddress])
   @@map("users")
