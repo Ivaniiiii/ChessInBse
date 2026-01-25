@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import './types/dom.js'; // Load DOM type declarations for ox library
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
