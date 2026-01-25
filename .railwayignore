@@ -1,0 +1,20 @@
+# Railway ignore - этот файл помогает Railway игнорировать frontend файлы
+# НО ГЛАВНОЕ: установите Root Directory = "backend" в настройках Railway!
+
+# Игнорируем frontend файлы
+src/
+public/
+index.html
+index.tsx
+index.css
+vite.config.ts
+*.local
+.env.local
+
+# Игнорируем корневой package.json (frontend)
+/package.json
+/package-lock.json
+/tsconfig.json
+
+# Оставляем backend
+!backend/
