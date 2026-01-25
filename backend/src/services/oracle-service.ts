@@ -117,6 +117,10 @@ class OracleService {
         args: [contractGameId],
       });
 
+      if (!game) {
+        return { success: false, error: 'Game not found in contract' };
+      }
+
       // State 1 = InProgress
       if (game.state !== 1) {
         return { success: false, error: `Game is not in progress (state: ${game.state})` };
@@ -150,6 +154,10 @@ class OracleService {
         hash,
         confirmations: 1,
       });
+
+      if (!receipt) {
+        return { success: false, error: 'Transaction receipt not received' };
+      }
 
       if (receipt.status === 'success') {
         // Update database
@@ -261,7 +269,7 @@ class OracleService {
       address: this.oracleAccount.address,
     });
     
-    return balance.toString();
+    return balance?.toString() || '0';
   }
 
   /**
@@ -276,6 +284,10 @@ class OracleService {
       const balance = await this.publicClient.getBalance({
         address: this.oracleAccount.address,
       });
+
+      if (!balance) {
+        return { ready: false, error: 'Failed to get balance' };
+      }
 
       // Need at least 0.001 ETH for gas
       if (balance < parseEther('0.001')) {

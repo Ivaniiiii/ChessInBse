@@ -39,6 +39,7 @@ class UserService {
         telegramStars: true,
         cryptoUsdt: true,
         cryptoTon: true,
+        cryptoEth: true,
         fiatRub: true,
       },
     });
@@ -50,6 +51,7 @@ class UserService {
       telegramStars: Number(user.telegramStars),
       cryptoUsdt: Number(user.cryptoUsdt),
       cryptoTon: Number(user.cryptoTon),
+      cryptoEth: Number(user.cryptoEth),
       fiatRub: Number(user.fiatRub),
     };
   }

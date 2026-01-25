@@ -65,33 +65,17 @@ VITE_API_URL=http://localhost:3001
 npm run dev
 ```
 
-## Настройка Telegram бота
-
-1. Создайте бота через [@BotFather](https://t.me/BotFather)
-2. Получите токен бота
-3. Добавьте токен в `backend/.env`:
-```
-TELEGRAM_BOT_TOKEN=your_bot_token_here
-```
-
-4. Настройте Web App:
-   - В BotFather выберите вашего бота
-   - Выберите "Bot Settings" -> "Menu Button"
-   - Установите URL вашего Web App
-
 ## Платежные интеграции
 
-### Внутренние токены
-Работают из коробки - виртуальная валюта платформы.
+### ETH на Base (Основной метод)
+- Ставки через смарт-контракт `ChessEscrow`
+- Безопасный эскроу до завершения игры
+- Автоматические выплаты победителю
 
-### Telegram Stars
-Требует настройки через Telegram Bot API.
-
-### Криптовалюты (TON, USDT)
-Требуют интеграции с блокчейном.
-
-### Платежные системы
-Требуют интеграции с платежными шлюзами (YooKassa, Stripe и т.д.).
+### Другие методы (опционально)
+- Внутренние токены (виртуальная валюта)
+- Криптовалюты (USDT, TON) - требуют интеграции
+- Фиатные платежи - требуют интеграции с платежными шлюзами
 
 ## Разработка
 
@@ -99,7 +83,7 @@ TELEGRAM_BOT_TOKEN=your_bot_token_here
 См. `backend/README.md` для деталей.
 
 ### Frontend
-Frontend использует React + TypeScript и адаптирован для работы как в Telegram Web App, так и в standalone режиме.
+Frontend использует React + TypeScript и работает как Base Mini App с поддержкой Farcaster Frame SDK.
 
 ## Base Mini App Deployment
 

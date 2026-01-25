@@ -1,7 +1,7 @@
 {
-  "name": "chess-tg-backend",
+  "name": "chess-backend",
   "version": "1.0.0",
-  "description": "Backend server for Telegram Chess Multiplayer with betting system",
+  "description": "Backend server for Chess Battle - Base Mini App with ETH betting",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
@@ -14,7 +14,7 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio"
   },
-  "keywords": ["telegram", "chess", "multiplayer", "betting"],
+  "keywords": ["chess", "multiplayer", "betting", "base", "ethereum", "web3"],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -23,7 +23,6 @@
     "chess.js": "1.0.0-beta.8",
     "express": "^4.21.0",
     "socket.io": "^4.8.0",
-    "grammy": "^1.25.0",
     "dotenv": "^16.4.5",
     "cors": "^2.8.5",
     "zod": "^3.23.8",

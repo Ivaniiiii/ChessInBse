@@ -83,7 +83,7 @@ class VoiceAIService {
     });
 
     if (session && session.conversationHistory) {
-      return session.conversationHistory as ConversationMessage[];
+      return session.conversationHistory as unknown as ConversationMessage[];
     }
 
     return [];
@@ -106,7 +106,7 @@ class VoiceAIService {
     return {
       systemInstruction,
       generationConfig: {
-        responseModalities: ['audio'],
+        responseModalities: ['audio' as any],
         speechConfig: {
           voiceConfig: {
             prebuiltVoiceConfig: {

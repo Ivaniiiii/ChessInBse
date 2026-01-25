@@ -1,6 +1,6 @@
-# Chess Telegram Backend
+# Chess Battle Backend
 
-Backend сервер для Telegram Chess Multiplayer с системой ставок.
+Backend сервер для Chess Battle - Base Mini App с ETH-ставками и мультиплеерными играми.
 
 ## Установка
 
@@ -38,12 +38,12 @@ npm start
 
 ## Структура проекта
 
-- `src/bot/` - Telegram бот логика
 - `src/api/` - REST API endpoints
-- `src/websocket/` - WebSocket сервер
-- `src/services/` - Бизнес-логика
-- `src/db/` - Работа с базой данных
-- `src/integrations/` - Платежные интеграции
+- `src/websocket/` - WebSocket сервер для real-time обновлений
+- `src/services/` - Бизнес-логика (игры, ставки, платежи)
+- `src/db/` - Работа с базой данных (Prisma)
+- `src/integrations/` - Интеграции (Ethereum, платежи)
+- `src/contracts/` - ABI смарт-контрактов
 
 ## API Endpoints
 

@@ -1,6 +1,7 @@
 import { CurrencyType, GameStatus, TransactionType, TransactionStatus } from '@prisma/client';
 
-export type { CurrencyType, GameStatus, TransactionType, TransactionStatus };
+// Re-export as values, not just types
+export { CurrencyType, GameStatus, TransactionType, TransactionStatus };
 
 export interface GameState {
   id: string;
