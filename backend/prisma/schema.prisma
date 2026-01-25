@@ -1,0 +1,170 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CurrencyType {
+  INTERNAL_TOKENS
+  TELEGRAM_STARS
+  CRYPTO_USDT
+  CRYPTO_TON
+  CRYPTO_ETH
+  FIAT_RUB
+}
+
+enum GameStatus {
+  WAITING_PLAYER
+  IN_PROGRESS
+  FINISHED
+  CANCELLED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAW
+  BET_LOCKED
+  BET_RELEASED
+  WIN
+  COMMISSION
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model User {
+  id            BigInt   @id @default(autoincrement())
+  telegramId    BigInt   @unique
+  farcasterFid  Int?     @unique  // Farcaster user ID
+  walletAddress String?  @unique  // Ethereum wallet address
+  username      String?
+  firstName     String?
+  lastName      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Balances for different currencies
+  internalTokens Decimal @default(0) @db.Decimal(18, 2)
+  telegramStars  Decimal @default(0) @db.Decimal(18, 2)
+  cryptoUsdt     Decimal @default(0) @db.Decimal(18, 8)
+  cryptoTon      Decimal @default(0) @db.Decimal(18, 8)
+  cryptoEth      Decimal @default(0) @db.Decimal(18, 18)
+  fiatRub        Decimal @default(0) @db.Decimal(18, 2)
+
+  // Relations
+  gamesAsPlayer1 Game[]  @relation("Player1Games")
+  gamesAsPlayer2 Game[]  @relation("Player2Games")
+  moves          Move[]
+  transactions   Transaction[]
+  gameSessions   GameSession[]
+
+  @@index([walletAddress])
+  @@map("users")
+}
+
+model Game {
+  id              String        @id @default(uuid())
+  player1Id       BigInt
+  player2Id       BigInt?
+  status          GameStatus    @default(WAITING_PLAYER)
+  betAmount       Decimal       @db.Decimal(18, 18)
+  betCurrency     CurrencyType
+  fen             String        @default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+  winnerId        BigInt?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  finishedAt      DateTime?
+
+  // Blockchain fields for ETH games
+  contractGameId  String?       @unique  // bytes32 game ID in smart contract
+  createTxHash    String?       // Transaction hash for game creation
+  joinTxHash      String?       // Transaction hash for player joining
+  finishTxHash    String?       // Transaction hash for declaring winner
+  player1Wallet   String?       // Player 1 wallet address
+  player2Wallet   String?       // Player 2 wallet address
+  winnerWallet    String?       // Winner wallet address
+
+  // Relations
+  player1       User          @relation("Player1Games", fields: [player1Id], references: [telegramId])
+  player2       User?         @relation("Player2Games", fields: [player2Id], references: [telegramId])
+  moves         Move[]
+  transactions  Transaction[]
+  sessions      GameSession[]
+
+  @@index([player1Id])
+  @@index([player2Id])
+  @@index([status])
+  @@index([contractGameId])
+  @@map("games")
+}
+
+model Move {
+  id          String   @id @default(uuid())
+  gameId      String
+  moveNumber  Int
+  moveSan     String
+  moveFrom    String
+  moveTo      String
+  playerId    BigInt
+  createdAt   DateTime @default(now())
+
+  // Relations
+  game        Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  player      User      @relation(fields: [playerId], references: [telegramId])
+
+  @@index([gameId])
+  @@index([playerId])
+  @@map("moves")
+}
+
+model Transaction {
+  id            String            @id @default(uuid())
+  userId        BigInt
+  type          TransactionType
+  amount        Decimal           @db.Decimal(18, 8)
+  currency      CurrencyType
+  status        TransactionStatus @default(PENDING)
+  gameId        String?
+  description   String?
+  externalId    String?           @unique
+  createdAt     DateTime          @default(now())
+  completedAt   DateTime?
+
+  // Relations
+  user          User              @relation(fields: [userId], references: [telegramId])
+  game          Game?             @relation(fields: [gameId], references: [id])
+
+  @@index([userId])
+  @@index([gameId])
+  @@index([status])
+  @@index([type])
+  @@map("transactions")
+}
+
+model GameSession {
+  id                  String   @id @default(uuid())
+  gameId              String
+  pieceId             String
+  conversationHistory Json     @default("[]")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  game                Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, pieceId])
+  @@index([gameId])
+  @@map("game_sessions")
+}
+

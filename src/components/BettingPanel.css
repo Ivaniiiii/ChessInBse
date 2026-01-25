@@ -1,0 +1,55 @@
+.betting-panel {
+  padding: 12px;
+  background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.betting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bet-amount,
+.pot-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bet-label,
+.pot-label {
+  font-size: 14px;
+  color: var(--tg-theme-hint-color, #999);
+}
+
+.bet-value,
+.pot-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--tg-theme-text-color, #000);
+}
+
+.make-move-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background: var(--tg-theme-button-color, #3390ec);
+  color: var(--tg-theme-button-text-color, #fff);
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.make-move-btn:hover {
+  opacity: 0.9;
+}
+
+.make-move-btn:active {
+  opacity: 0.8;
+}
+

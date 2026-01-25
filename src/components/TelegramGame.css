@@ -1,0 +1,49 @@
+.telegram-game {
+  padding: 12px;
+  min-height: 100vh;
+  background: var(--tg-theme-bg-color, #fff);
+  color: var(--tg-theme-text-color, #000);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  color: var(--tg-theme-text-color, #000);
+}
+
+.connection-status {
+  padding: 8px;
+  background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--tg-theme-hint-color, #999);
+}
+
+.game-info {
+  margin-bottom: 12px;
+}
+
+.game-result {
+  padding: 12px;
+  background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.turn-indicator {
+  padding: 8px;
+  background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+

@@ -1,0 +1,24 @@
+{
+  "name": "chess-escrow-contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for Chess ETH betting on Base",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "deploy:base-sepolia": "hardhat run scripts/deploy.ts --network baseSepolia",
+    "deploy:base": "hardhat run scripts/deploy.ts --network base",
+    "verify:base-sepolia": "hardhat verify --network baseSepolia",
+    "verify:base": "hardhat verify --network base",
+    "node": "hardhat node"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "hardhat": "^2.19.0",
+    "dotenv": "^16.3.1",
+    "typescript": "^5.3.0",
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.2"
+  }
+}
