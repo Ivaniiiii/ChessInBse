@@ -2,6 +2,9 @@ FROM node:20-bookworm-slim AS builder
 
 WORKDIR /app
 
+# OpenSSL for Prisma generate
+RUN apt-get update -y && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+
 # Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
@@ -22,6 +25,9 @@ RUN npm run build
 FROM node:20-bookworm-slim
 
 WORKDIR /app
+
+# OpenSSL for Prisma engine (Bookworm has OpenSSL 3)
+RUN apt-get update -y && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Copy package files
 COPY package*.json ./
