@@ -1,7 +1,5 @@
 import { Server as SocketIOServer } from 'socket.io';
 import { gameService } from '../services/game-service.js';
-import { GameState } from '../types/index.js';
-import { setupVoiceHandlers } from './voice-handler.js';
 
 // #region agent log
 const DEBUG_LOG = (msg: string, data: Record<string, unknown>) => {
@@ -10,8 +8,6 @@ const DEBUG_LOG = (msg: string, data: Record<string, unknown>) => {
 // #endregion
 
 export function setupWebSocket(io: SocketIOServer) {
-  // Setup voice/AI handlers
-  setupVoiceHandlers(io);
   io.on('connection', (socket) => {
     console.log(`Client connected: ${socket.id}`);
 
