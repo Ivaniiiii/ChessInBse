@@ -1,9 +1,6 @@
-FROM node:20-alpine AS builder
+FROM node:20-bookworm-slim AS builder
 
 WORKDIR /app
-
-# Prisma needs libssl.so.1.1 (openssl1.1-compat on Alpine)
-RUN apk add --no-cache openssl1.1-compat openssl
 
 # Copy package files
 COPY package*.json ./
@@ -22,12 +19,9 @@ RUN npm run db:generate
 RUN npm run build
 
 # Production image
-FROM node:20-alpine
+FROM node:20-bookworm-slim
 
 WORKDIR /app
-
-# Prisma engine needs libssl.so.1.1 at runtime
-RUN apk add --no-cache openssl1.1-compat openssl
 
 # Copy package files
 COPY package*.json ./
