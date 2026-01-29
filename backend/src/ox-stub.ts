@@ -4,4 +4,4 @@
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const stub: any = {};
-export = stub;
+export default stub;

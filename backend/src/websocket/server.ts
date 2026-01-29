@@ -44,7 +44,7 @@ export function setupWebSocket(io: SocketIOServer) {
         io.to(room).emit('game_state', result.game);
         socket.emit('move_success', result);
       } catch (error: any) {
-        DEBUG_LOG('make_move error', { hypothesisId: 'C', gameId, userId: String(data.userId), error: error.message });
+        DEBUG_LOG('make_move error', { hypothesisId: 'C', gameId: data.gameId, userId: String(data.userId), error: error.message });
         socket.emit('move_error', { error: error.message });
       }
     });
