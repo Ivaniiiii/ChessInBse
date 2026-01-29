@@ -2,6 +2,12 @@ import { Router } from 'express';
 import { gameService } from '../../services/game-service.js';
 import { CreateGameRequest, JoinGameRequest, MakeMoveRequest } from '../../types/index.js';
 
+// #region agent log
+const DEBUG_LOG = (msg: string, data: Record<string, unknown>) => {
+  fetch('http://127.0.0.1:7250/ingest/60b382e0-c378-4f86-9118-f08f54dd81e2', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'games.ts', message: msg, data: { ...data, timestamp: Date.now(), sessionId: 'debug-session' } }) }).catch(() => {});
+};
+// #endregion
+
 export const gameRoutes = Router();
 
 // Create a new game
@@ -102,6 +108,7 @@ gameRoutes.post('/eth/create', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    DEBUG_LOG('POST /eth/create before', { hypothesisId: 'A', contractGameId, player1Wallet });
     const game = await gameService.createEthGame({
       contractGameId,
       player1Wallet,
@@ -109,7 +116,7 @@ gameRoutes.post('/eth/create', async (req, res) => {
       createTxHash,
       farcasterFid,
     });
-
+    DEBUG_LOG('POST /eth/create after', { hypothesisId: 'A', backendGameId: game.id, contractGameId });
     res.json(game);
   } catch (error: any) {
     console.error('Error creating ETH game:', error);

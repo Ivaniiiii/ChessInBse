@@ -1,8 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { formatEther } from 'viem';
 import { useCreateGame, useJoinGame, useContractData, generateGameId } from '../hooks/useChessContract';
 import { ContractGame, GameState } from '../contracts/ChessEscrowABI';
 import './GameLobby.css';
+
+// #region agent log
+const DEBUG_LOG = (msg: string, data: Record<string, unknown>) => {
+  fetch('http://127.0.0.1:7250/ingest/60b382e0-c378-4f86-9118-f08f54dd81e2', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'GameLobby.tsx', message: msg, data: { ...data, timestamp: Date.now(), sessionId: 'debug-session' }) }).catch(() => {});
+};
+// #endregion
 
 interface GameLobbyProps {
   userAddress: `0x${string}` | undefined;
@@ -22,6 +28,7 @@ export const GameLobby: React.FC<GameLobbyProps> = ({
   const [betAmount, setBetAmount] = useState('0.01');
   const [isCreating, setIsCreating] = useState(false);
   const [joiningGameId, setJoiningGameId] = useState<`0x${string}` | null>(null);
+  const createGameIdRef = useRef<`0x${string}` | null>(null);
   
   const { minBet, maxBet, commissionPercent } = useContractData();
   const { 
@@ -53,9 +60,10 @@ export const GameLobby: React.FC<GameLobbyProps> = ({
     // Generate unique game ID
     const seed = `${userAddress}-${Date.now()}-${Math.random()}`;
     const gameId = generateGameId(seed);
-    
+    createGameIdRef.current = gameId;
     try {
       createGame(gameId, betAmount);
+      DEBUG_LOG('createGame called', { hypothesisId: 'A', gameIdUsedInCreate: gameId, seed });
       
       // Note: In production, we'd wait for confirmation and then register with backend
       // For now, we'll use the contract gameId as backend ID temporarily
@@ -70,11 +78,12 @@ export const GameLobby: React.FC<GameLobbyProps> = ({
   // Watch for create confirmation
   React.useEffect(() => {
     if (isCreateConfirmed && createHash && isCreating) {
-      // Game created successfully - navigate to game
-      // In production, we'd call backend API here to register the game
-      const seed = `${userAddress}-${Date.now()}`;
-      const gameId = generateGameId(seed);
-      onGameCreated(gameId, createHash);
+      const seedRegen = `${userAddress}-${Date.now()}`;
+      const gameIdRegen = generateGameId(seedRegen);
+      const gameIdUsedInCreate = createGameIdRef.current;
+      const contractGameIdToPass = gameIdUsedInCreate ?? gameIdRegen;
+      DEBUG_LOG('create confirmed', { hypothesisId: 'B', gameIdUsedInCreate: gameIdUsedInCreate ?? null, gameIdPassedToCallback: contractGameIdToPass, idsMatch: gameIdUsedInCreate === contractGameIdToPass, backendIdPassed: createHash, backendEthCreateCalled: false });
+      onGameCreated(contractGameIdToPass, createHash);
       setIsCreating(false);
       resetCreate();
     }
@@ -97,7 +106,7 @@ export const GameLobby: React.FC<GameLobbyProps> = ({
   // Watch for join confirmation
   React.useEffect(() => {
     if (isJoinConfirmed && joinHash && joiningGameId) {
-      // Game joined successfully - navigate to game
+      DEBUG_LOG('join confirmed', { hypothesisId: 'E', contractGameId: joiningGameId, backendIdPassed: joinHash, backendEthJoinCalled: false });
       onGameJoined(joiningGameId, joinHash);
       setJoiningGameId(null);
       resetJoin();

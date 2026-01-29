@@ -32,6 +32,13 @@ export const BaseGame: React.FC<BaseGameProps> = ({
   
   // WebSocket connection for real-time moves
   const userId = userAddress ? BigInt(parseInt(userAddress.slice(2, 10), 16)) : null;
+  // #region agent log
+  React.useEffect(() => {
+    if (userAddress && userId !== null) {
+      fetch('http://127.0.0.1:7250/ingest/60b382e0-c378-4f86-9118-f08f54dd81e2', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'BaseGame.tsx', message: 'userId derived', data: { hypothesisId: 'C', userAddress, userId: userId.toString(), backendGameId, timestamp: Date.now(), sessionId: 'debug-session' } }) }).catch(() => {});
+    }
+  }, [userAddress, userId, backendGameId]);
+  // #endregion
   const { gameState, connected, makeMove, on: wsOn } = useWebSocket(backendGameId, userId);
 
   // Sync with contract state

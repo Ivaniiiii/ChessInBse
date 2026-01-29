@@ -4,6 +4,11 @@
     "module": "ESNext",
     "lib": ["ES2022", "DOM"],
     "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "ox/core/WebAuthnP256": ["./src/ox-stub.ts"],
+      "ox/core/internal/webauthn": ["./src/ox-stub.ts"]
+    },
     "rootDir": "./src",
     "outDir": "./dist",
     "strict": true,

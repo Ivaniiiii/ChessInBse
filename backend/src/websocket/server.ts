@@ -3,6 +3,12 @@ import { gameService } from '../services/game-service.js';
 import { GameState } from '../types/index.js';
 import { setupVoiceHandlers } from './voice-handler.js';
 
+// #region agent log
+const DEBUG_LOG = (msg: string, data: Record<string, unknown>) => {
+  fetch('http://127.0.0.1:7250/ingest/60b382e0-c378-4f86-9118-f08f54dd81e2', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'websocket/server.ts', message: msg, data: { ...data, timestamp: Date.now(), sessionId: 'debug-session' } }) }).catch(() => {});
+};
+// #endregion
+
 export function setupWebSocket(io: SocketIOServer) {
   // Setup voice/AI handlers
   setupVoiceHandlers(io);
@@ -14,9 +20,8 @@ export function setupWebSocket(io: SocketIOServer) {
       const { gameId, userId } = data;
       const room = `game:${gameId}`;
       socket.join(room);
-      
-      // Send current game state
       const game = await gameService.getGameById(gameId);
+      DEBUG_LOG('join_game', { hypothesisId: 'D', gameId, userId: String(userId), gameFound: !!game });
       if (game) {
         socket.emit('game_state', game);
       }
@@ -33,14 +38,13 @@ export function setupWebSocket(io: SocketIOServer) {
       try {
         const { gameId, userId, move } = data;
         const result = await gameService.makeMove(gameId, BigInt(userId), move);
-        
-        // Broadcast to all players in the game room
+        DEBUG_LOG('make_move success', { hypothesisId: 'C', gameId, userId: String(userId) });
         const room = `game:${gameId}`;
         io.to(room).emit('move_made', result);
         io.to(room).emit('game_state', result.game);
-        
         socket.emit('move_success', result);
       } catch (error: any) {
+        DEBUG_LOG('make_move error', { hypothesisId: 'C', gameId, userId: String(data.userId), error: error.message });
         socket.emit('move_error', { error: error.message });
       }
     });

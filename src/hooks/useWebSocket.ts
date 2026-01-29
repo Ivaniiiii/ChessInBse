@@ -3,6 +3,11 @@ import { io, Socket } from 'socket.io-client';
 import { GameState, MoveData } from '../types';
 
 const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:3001';
+// #region agent log
+const DEBUG_LOG = (msg: string, data: Record<string, unknown>) => {
+  fetch('http://127.0.0.1:7250/ingest/60b382e0-c378-4f86-9118-f08f54dd81e2', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'useWebSocket.ts', message: msg, data: { ...data, timestamp: Date.now(), sessionId: 'debug-session' } }) }).catch(() => {});
+};
+// #endregion
 
 export interface WebSocketEvents {
   game_state: (game: GameState) => void;
@@ -29,8 +34,7 @@ export function useWebSocket(gameId: string | null, userId: bigint | null) {
     newSocket.on('connect', () => {
       console.log('WebSocket connected');
       setConnected(true);
-      
-      // Join game room
+      DEBUG_LOG('join_game emit', { hypothesisId: 'D', gameId, userId: userId.toString() });
       newSocket.emit('join_game', { gameId, userId: userId.toString() });
     });
 

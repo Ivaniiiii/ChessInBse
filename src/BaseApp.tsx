@@ -8,6 +8,11 @@ import { BaseGame } from './components/BaseGame';
 import { Web3Provider } from './providers/Web3Provider';
 import { ContractGame, GameState } from './contracts/ChessEscrowABI';
 import './components/TelegramGame.css';
+// #region agent log
+const DEBUG_LOG = (msg: string, data: Record<string, unknown>) => {
+  fetch('http://127.0.0.1:7250/ingest/60b382e0-c378-4f86-9118-f08f54dd81e2', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'BaseApp.tsx', message: msg, data: { ...data, timestamp: Date.now(), sessionId: 'debug-session' }) }).catch(() => {});
+};
+// #endregion
 
 type AppScreen = 'lobby' | 'game';
 
@@ -45,12 +50,14 @@ const BaseAppContent: React.FC<BaseAppContentProps> = () => {
   }, [refetchGames]);
 
   const handleGameCreated = (contractGameId: `0x${string}`, backendId: string) => {
+    DEBUG_LOG('handleGameCreated', { hypothesisId: 'D', contractGameId, backendId, backendIdIsUuid: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(backendId) });
     setCurrentGameId(contractGameId);
     setBackendGameId(backendId);
     setScreen('game');
   };
 
   const handleGameJoined = (contractGameId: `0x${string}`, backendId: string) => {
+    DEBUG_LOG('handleGameJoined', { hypothesisId: 'D', contractGameId, backendId });
     setCurrentGameId(contractGameId);
     setBackendGameId(backendId);
     setScreen('game');
